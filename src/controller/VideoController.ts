@@ -9,6 +9,10 @@ import { Configuration } from "../infra/configuration"
 import TriggerVideoToProcessUseCase, { TriggerVideoInput } from "../core/usecase/TriggerVideoToProcessUseCase"
 import TriggerQueueService from "../core/service/TriggerQueueService"
 import CompressQueueService from "../core/service/CompressQueueService"
+import { VideoInput, VideoUpdate } from "../core/entity/Video"
+import CreateVideoUseCase from "../core/usecase/CreateVideoUseCase"
+import VideoRepository from "../core/repository/VideoRepository"
+import UpdateVideoUseCase from "../core/usecase/UpdateVideoUseCase"
 
 @injectable()
 export default class VideoController {
@@ -21,6 +25,7 @@ export default class VideoController {
         @inject(TYPES.Configuration) private readonly configuration: Configuration,
         @inject(TYPES.TriggerQueueService) private readonly triggerQueueService: TriggerQueueService,
         @inject(TYPES.CompressQueueService) private readonly compressQueueService: CompressQueueService,
+        @inject(TYPES.VideoRepository) private readonly videoRepository: VideoRepository
     ) {}
 
     async trigger(input: TriggerVideoInput) {
@@ -34,4 +39,13 @@ export default class VideoController {
         return usecase.execute(input)
     }
 
+    async create(input: VideoInput) {
+        const usecase = new CreateVideoUseCase(this.logger, this.videoRepository)
+        return usecase.execute(input)
+    }
+
+    async update(input: VideoUpdate) {
+        const usecase = new UpdateVideoUseCase(this.logger, this.videoRepository)
+        return usecase.execute(input)
+    }
 }

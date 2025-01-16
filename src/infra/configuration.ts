@@ -5,6 +5,7 @@ export interface Configuration {
     COMPRESS_VIDEO_QUEUE_NAME: string
     DATA_BUCKET_NAME: string
     STATUS_QUEUE_NAME: string
+    VIDEO_TABLE: string
 }
 
 export const configuration: Configuration = {
@@ -13,4 +14,5 @@ export const configuration: Configuration = {
     COMPRESS_VIDEO_QUEUE_NAME: process.env.COMPRESS_VIDEO_QUEUE_NAME || 'compress-video-queue',
     STATUS_QUEUE_NAME: process.env.STATUS_QUEUE_NAME || 'status-video-queue',
     DATA_BUCKET_NAME: process.env.DATA_BUCKET_NAME || '674940554881-video-process-222',
+    VIDEO_TABLE: 'videos'
 }

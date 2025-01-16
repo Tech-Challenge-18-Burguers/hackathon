@@ -12,5 +12,7 @@ export const TYPES = {
     SQSClient: Symbol.for('SQSClient'),
     ListFilesByPrefixService: Symbol.for('ListFilesByPrefixService'),
     FileController: Symbol.for('FileController'),
-    CompressQueueService: Symbol.for('CompressQueueService')
+    CompressQueueService: Symbol.for('CompressQueueService'),
+    DynamoDBClient: Symbol.for('DynamoDBClient'),
+    VideoRepository: Symbol.for('VideoRepository')
 }

@@ -21,6 +21,9 @@ import ListFilesByPrefixServiceImpl from "../application/service/ListFilesByPref
 import FileController from "../controller/FileController"
 import CompressQueueService from "../core/service/CompressQueueService"
 import CompressQueueServiceImpl from "../application/service/CompressQueueServiceImpl"
+import AwsDynamoDBClient from "./aws/AwsDynamoDBClient"
+import VideoRepository from "../core/repository/VideoRepository"
+import VideoRepositoryDynamoDB from "../application/repository/VideoRepositoryDynamoDB"
 
 const container = new Container()
 
@@ -28,6 +31,9 @@ container.bind<Logger>(TYPES.Logger).toConstantValue(new Logger())
 container.bind<Configuration>(TYPES.Configuration).toConstantValue(configuration)
 container.bind<AwsS3Client>(TYPES.S3Client).toConstantValue(new AwsS3Client())
 container.bind<AwsSqsClient>(TYPES.SQSClient).toConstantValue(new AwsSqsClient())
+container.bind<AwsDynamoDBClient>(TYPES.DynamoDBClient).toConstantValue(new AwsDynamoDBClient())
+
+container.bind<VideoRepository>(TYPES.VideoRepository).to(VideoRepositoryDynamoDB)
 
 container.bind<CompressService>(TYPES.CompressService).to(CompressServiceImpl)
 container.bind<DownloadFileService>(TYPES.DownloadFileService).to(DownloadFileServiceImpl)

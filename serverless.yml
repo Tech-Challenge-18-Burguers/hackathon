@@ -6,6 +6,7 @@ custom:
   queueCompressVideo: compress-video-queue
   queueStatusVideo: status-video-queue
   bucketName: video-data
+  dynamoDBTable: videos
 
 provider:
   name: aws
@@ -35,6 +36,7 @@ provider:
     COMPRESS_VIDEO_QUEUE_NAME: ${self:custom.queueCompressVideo}
     STATUS_QUEUE_NAME: ${self:custom.queueStatusVideo}
     DATA_BUCKET_NAME: ${aws:accountId}-${self:custom.bucketName}
+    VIDEO_TABLE: ${self:custom.dynamoDBTable}
 
 build:
   esbuild: false
@@ -77,6 +79,19 @@ functions:
               - ProcessQueueSQS
               - Arn
           batchSize: 1
+  create:
+    handler: src/handler/create.handler
+    timeout: 30
+  update:
+    handler: src/handler/update.handler
+    timeout: 30
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - StatusQueueSQS
+              - Arn
+          batchSize: 1
 
 resources:
   Resources: 
@@ -90,11 +105,30 @@ resources:
       Properties:
         QueueName: ${self:custom.queueCompressVideo}
         VisibilityTimeout: 900
+    StatusQueueSQS:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ${self:custom.queueStatusVideo}
+        VisibilityTimeout: 30
     BucketData:
       Type: "AWS::S3::Bucket"
       Properties:
         BucketName: ${aws:accountId}-${self:custom.bucketName}
         AccessControl: Private
+    DynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.dynamoDBTable}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: userId
+            KeyType: RANGE
   
 plugins:
   - serverless-plugin-typescript
