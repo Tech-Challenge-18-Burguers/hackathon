@@ -1,0 +1,100 @@
+service: hackathon-services
+
+custom:
+  currentStage: ${opt:stage, 'dev'}
+  queueProcessVideo: process-video-queue
+  queueCompressVideo: compress-video-queue
+  queueStatusVideo: status-video-queue
+  bucketName: video-data
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  # role: arn:aws:iam::674940554881:role/LabRole
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 's3:*'
+          Resource: '*'
+        - Effect: Allow
+          Action: 'sqs:*'
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - iam:CreateRole
+            - iam:PassRole
+            - tag:GetResources
+            - tag:TagResources
+            - tag:UntagResources
+          Resource: "*"
+  environment:
+    TMP_DIR: '/tmp'
+    PROCESS_VIDEO_QUEUE_NAME: ${self:custom.queueProcessVideo}
+    COMPRESS_VIDEO_QUEUE_NAME: ${self:custom.queueCompressVideo}
+    STATUS_QUEUE_NAME: ${self:custom.queueStatusVideo}
+    DATA_BUCKET_NAME: ${aws:accountId}-${self:custom.bucketName}
+
+build:
+  esbuild: false
+
+package:
+  individually: true
+
+functions:
+  trigger:
+    handler: src/handler/trigger.handler
+    timeout: 30
+    events:
+      - s3:
+          bucket: ${aws:accountId}-${self:custom.bucketName}
+          event: s3:ObjectCreated:*
+          rules:
+            - suffix: .mp4
+          existing: true
+  compress:
+    handler: src/handler/compress.handler
+    timeout: 900
+    memorySize: 5120
+    ephemeralStorageSize: 5120
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - CompressQueueSQS
+              - Arn
+          batchSize: 1
+  process:
+    handler: src/handler/process.handler
+    timeout: 900
+    memorySize: 5120
+    ephemeralStorageSize: 5120
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - ProcessQueueSQS
+              - Arn
+          batchSize: 1
+
+resources:
+  Resources: 
+    ProcessQueueSQS:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ${self:custom.queueProcessVideo}
+        VisibilityTimeout: 900
+    CompressQueueSQS:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ${self:custom.queueCompressVideo}
+        VisibilityTimeout: 900
+    BucketData:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: ${aws:accountId}-${self:custom.bucketName}
+        AccessControl: Private
+  
+plugins:
+  - serverless-plugin-typescript
