@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
+require("reflect-metadata");
 const container_1 = require("../infra/container");
 const types_1 = require("../types");
 const awsEventHelper_1 = __importDefault(require("../helper/awsEventHelper"));

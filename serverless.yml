@@ -92,6 +92,9 @@ functions:
               - StatusQueueSQS
               - Arn
           batchSize: 1
+  presignurl:
+    handler: src/handler/presignurl.handler
+    timeout: 30
 
 resources:
   Resources: 

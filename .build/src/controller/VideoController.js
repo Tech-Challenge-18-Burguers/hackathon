@@ -22,8 +22,9 @@ const SplitVideoToFramesUseCase_1 = __importDefault(require("../core/usecase/Spl
 const TriggerVideoToProcessUseCase_1 = __importDefault(require("../core/usecase/TriggerVideoToProcessUseCase"));
 const CreateVideoUseCase_1 = __importDefault(require("../core/usecase/CreateVideoUseCase"));
 const UpdateVideoUseCase_1 = __importDefault(require("../core/usecase/UpdateVideoUseCase"));
+const GeneratePreSignedUrlUseCase_1 = __importDefault(require("../core/usecase/GeneratePreSignedUrlUseCase"));
 let VideoController = class VideoController {
-    constructor(logger, downloadFileService, splitVideoFramesService, uploadFileService, configuration, triggerQueueService, compressQueueService, videoRepository) {
+    constructor(logger, downloadFileService, splitVideoFramesService, uploadFileService, configuration, triggerQueueService, compressQueueService, videoRepository, storageService) {
         this.logger = logger;
         this.downloadFileService = downloadFileService;
         this.splitVideoFramesService = splitVideoFramesService;
@@ -32,6 +33,7 @@ let VideoController = class VideoController {
         this.triggerQueueService = triggerQueueService;
         this.compressQueueService = compressQueueService;
         this.videoRepository = videoRepository;
+        this.storageService = storageService;
     }
     async trigger(input) {
         const usecase = new TriggerVideoToProcessUseCase_1.default(this.logger, this.triggerQueueService);
@@ -49,6 +51,10 @@ let VideoController = class VideoController {
         const usecase = new UpdateVideoUseCase_1.default(this.logger, this.videoRepository);
         return usecase.execute(input);
     }
+    async generatePresignUrl(input) {
+        const usecase = new GeneratePreSignedUrlUseCase_1.default(this.logger, this.storageService, this.configuration);
+        return usecase.execute(input);
+    }
 };
 VideoController = __decorate([
     (0, inversify_1.injectable)(),
@@ -60,6 +66,7 @@ VideoController = __decorate([
     __param(5, (0, inversify_1.inject)(types_1.TYPES.TriggerQueueService)),
     __param(6, (0, inversify_1.inject)(types_1.TYPES.CompressQueueService)),
     __param(7, (0, inversify_1.inject)(types_1.TYPES.VideoRepository)),
-    __metadata("design:paramtypes", [Logger_1.default, Object, Object, Object, Object, Object, Object, Object])
+    __param(8, (0, inversify_1.inject)(types_1.TYPES.StorageService)),
+    __metadata("design:paramtypes", [Logger_1.default, Object, Object, Object, Object, Object, Object, Object, Object])
 ], VideoController);
 exports.default = VideoController;

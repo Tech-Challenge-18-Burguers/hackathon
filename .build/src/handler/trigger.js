@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
+require("reflect-metadata");
 const container_1 = require("../infra/container");
 const types_1 = require("../types");
 const handler = async (event) => {

@@ -21,6 +21,7 @@ const FileController_1 = __importDefault(require("../controller/FileController")
 const CompressQueueServiceImpl_1 = __importDefault(require("../application/service/CompressQueueServiceImpl"));
 const AwsDynamoDBClient_1 = __importDefault(require("./aws/AwsDynamoDBClient"));
 const VideoRepositoryDynamoDB_1 = __importDefault(require("../application/repository/VideoRepositoryDynamoDB"));
+const StorageServiceImpl_1 = __importDefault(require("../application/service/StorageServiceImpl"));
 const container = new inversify_1.Container();
 exports.container = container;
 container.bind(types_1.TYPES.Logger).toConstantValue(new Logger_1.default());
@@ -36,5 +37,6 @@ container.bind(types_1.TYPES.UploadFileService).to(UploadFileServiceImpl_1.defau
 container.bind(types_1.TYPES.TriggerQueueService).to(TriggerQueueServiceImpl_1.default);
 container.bind(types_1.TYPES.ListFilesByPrefixService).to(ListFilesByPrefixServiceImpl_1.default);
 container.bind(types_1.TYPES.CompressQueueService).to(CompressQueueServiceImpl_1.default);
+container.bind(types_1.TYPES.StorageService).to(StorageServiceImpl_1.default);
 container.bind(types_1.TYPES.VideoController).to(VideoController_1.default);
 container.bind(types_1.TYPES.FileController).to(FileController_1.default);

@@ -13,6 +13,8 @@ import { VideoInput, VideoUpdate } from "../core/entity/Video"
 import CreateVideoUseCase from "../core/usecase/CreateVideoUseCase"
 import VideoRepository from "../core/repository/VideoRepository"
 import UpdateVideoUseCase from "../core/usecase/UpdateVideoUseCase"
+import GeneratePreSignedUrlUseCase, { PreSignUrlInput } from "../core/usecase/GeneratePreSignedUrlUseCase"
+import StorageService from "../core/service/StorageService"
 
 @injectable()
 export default class VideoController {
@@ -25,7 +27,8 @@ export default class VideoController {
         @inject(TYPES.Configuration) private readonly configuration: Configuration,
         @inject(TYPES.TriggerQueueService) private readonly triggerQueueService: TriggerQueueService,
         @inject(TYPES.CompressQueueService) private readonly compressQueueService: CompressQueueService,
-        @inject(TYPES.VideoRepository) private readonly videoRepository: VideoRepository
+        @inject(TYPES.VideoRepository) private readonly videoRepository: VideoRepository,
+        @inject(TYPES.StorageService) private readonly storageService: StorageService
     ) {}
 
     async trigger(input: TriggerVideoInput) {
@@ -46,6 +49,11 @@ export default class VideoController {
 
     async update(input: VideoUpdate) {
         const usecase = new UpdateVideoUseCase(this.logger, this.videoRepository)
+        return usecase.execute(input)
+    }
+
+    async generatePresignUrl(input: PreSignUrlInput) {
+        const usecase = new GeneratePreSignedUrlUseCase(this.logger, this.storageService, this.configuration)
         return usecase.execute(input)
     }
 }

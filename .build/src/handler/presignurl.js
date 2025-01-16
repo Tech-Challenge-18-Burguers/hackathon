@@ -15,9 +15,10 @@ const handler = async (event) => {
         logger.debug(`Received event`, { event });
         const controller = container_1.container.get(types_1.TYPES.VideoController);
         const input = { ...(0, awsEventHelper_1.default)(event.body), userId: (0, authenticatedUser_1.getAuthenticatedUser)(event) };
-        const response = await controller.create(input);
+        const response = await controller.generatePresignUrl(input);
+        logger.info(`Generated with success`, { response });
         return {
-            statusCode: 201,
+            statusCode: 200,
             body: JSON.stringify(response)
         };
     }

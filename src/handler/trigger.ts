@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { S3Event } from "aws-lambda";
 import { container } from "../infra/container";
 import Logger from "../infra/logger/Logger";

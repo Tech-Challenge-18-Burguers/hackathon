@@ -24,6 +24,8 @@ import CompressQueueServiceImpl from "../application/service/CompressQueueServic
 import AwsDynamoDBClient from "./aws/AwsDynamoDBClient"
 import VideoRepository from "../core/repository/VideoRepository"
 import VideoRepositoryDynamoDB from "../application/repository/VideoRepositoryDynamoDB"
+import StorageService from "../core/service/StorageService"
+import StorageServiceImpl from "../application/service/StorageServiceImpl"
 
 const container = new Container()
 
@@ -42,6 +44,7 @@ container.bind<UploadFileService>(TYPES.UploadFileService).to(UploadFileServiceI
 container.bind<TriggerQueueService>(TYPES.TriggerQueueService).to(TriggerQueueServiceImpl)
 container.bind<ListFilesByPrefixService>(TYPES.ListFilesByPrefixService).to(ListFilesByPrefixServiceImpl)
 container.bind<CompressQueueService>(TYPES.CompressQueueService).to(CompressQueueServiceImpl)
+container.bind<StorageService>(TYPES.StorageService).to(StorageServiceImpl)
 
 container.bind<VideoController>(TYPES.VideoController).to(VideoController)
 container.bind<FileController>(TYPES.FileController).to(FileController)

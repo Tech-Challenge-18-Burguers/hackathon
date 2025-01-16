@@ -4,13 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
+require("reflect-metadata");
 const container_1 = require("../infra/container");
 const types_1 = require("../types");
 const awsEventHelper_1 = __importDefault(require("../helper/awsEventHelper"));
 const handler = async (event) => {
     const logger = container_1.container.get(types_1.TYPES.Logger);
-    logger.debug(`Received event`, { event });
     try {
+        logger.debug(`Received event`, { event });
         const controller = container_1.container.get(types_1.TYPES.VideoController);
         for (const record of event.Records) {
             logger.debug(`Start processing record`, { record });

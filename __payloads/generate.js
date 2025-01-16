@@ -6,6 +6,7 @@ const modelProcess = require('./model/process.json')
 const modelCompress = require('./model/compress.json')
 const modelCreate = require('./model/create.json')
 const modelUpdate = require('./model/update.json')
+const modelPresignUrl = require('./model/presignurl.json')
 
 function setBody(event, body) {
     event.Records[0].body = JSON.stringify(body)
@@ -17,7 +18,14 @@ function setBodyProxy(event, body) {
     return JSON.stringify(event)
 }
 
-fs.writeFileSync(path.join(__dirname, 'process.json'), setBody(sqsEvent, modelProcess))
-fs.writeFileSync(path.join(__dirname, 'compress.json'), setBody(sqsEvent, modelCompress))
-fs.writeFileSync(path.join(__dirname, 'update.json'), setBody(sqsEvent, modelUpdate))
-fs.writeFileSync(path.join(__dirname, 'create.json'), setBodyProxy(apiGatewayProxyEvent, modelCreate))
+const workdir = path.join(__dirname, '.data')
+if(!fs.existsSync(workdir)) {
+    fs.mkdirSync(workdir)
+}
+
+
+fs.writeFileSync(path.join(workdir, 'process.json'), setBody(sqsEvent, modelProcess))
+fs.writeFileSync(path.join(workdir, 'compress.json'), setBody(sqsEvent, modelCompress))
+fs.writeFileSync(path.join(workdir, 'update.json'), setBody(sqsEvent, modelUpdate))
+fs.writeFileSync(path.join(workdir, 'create.json'), setBodyProxy(apiGatewayProxyEvent, modelCreate))
+fs.writeFileSync(path.join(workdir, 'presignurl.json'), setBodyProxy(apiGatewayProxyEvent, modelPresignUrl))

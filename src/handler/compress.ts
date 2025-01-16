@@ -1,4 +1,5 @@
-import { S3Event, SQSEvent } from "aws-lambda";
+import 'reflect-metadata'
+import { SQSEvent } from "aws-lambda";
 import { container } from "../infra/container";
 import { TYPES } from "../types";
 import Logger from "../infra/logger/Logger";

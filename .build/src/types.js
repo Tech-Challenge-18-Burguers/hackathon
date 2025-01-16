@@ -16,5 +16,6 @@ exports.TYPES = {
     FileController: Symbol.for('FileController'),
     CompressQueueService: Symbol.for('CompressQueueService'),
     DynamoDBClient: Symbol.for('DynamoDBClient'),
-    VideoRepository: Symbol.for('VideoRepository')
+    VideoRepository: Symbol.for('VideoRepository'),
+    StorageService: Symbol.for('StorageService')
 };
