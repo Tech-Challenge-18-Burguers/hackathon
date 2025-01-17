@@ -18,7 +18,7 @@ export default class ChangeVideoStatusQueueServiceImpl extends SqsQueueService i
     }
 
     async send(input: ChangeVideoStatus): Promise<void> {
-        this.sendMessage(input, this.configuration.STATUS_QUEUE_NAME)
+        return this.sendMessage(input, this.configuration.STATUS_QUEUE_NAME)
     }
 
 }
