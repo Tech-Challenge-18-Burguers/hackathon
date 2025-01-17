@@ -63,6 +63,7 @@ export default class CompressFilesUseCase {
             .upload({ bucket: input.bucket, key: `${input.id}/frames.zip`, filePath: compressResponse.filename })
 
         this.logger.info(`Upload successfully`, { uploadResponse })
+        await this.changeVideoStatusService.send({ id: input.id, status: VideoStatus.DOWNLOAD_AVAILABLE })
     }
 
     private extractFileName(key: string): string {
