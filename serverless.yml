@@ -6,7 +6,7 @@ custom:
   queueCompressVideo: compress-video-queue
   queueStatusVideo: status-video-queue
   bucketName: video-data
-  dynamoDBTable: videos-tst
+  dynamoDBTable: videos
 
 provider:
   name: aws
