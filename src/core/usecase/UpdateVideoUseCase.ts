@@ -9,6 +9,7 @@ export default class UpdateVideoUseCase {
     ) {}
 
     async execute(input: VideoUpdate): Promise<Video> {
+        this.logger.info(`Update video`, { input })
         return this.repository.update({
             id: input.id, 
             status: input.status,

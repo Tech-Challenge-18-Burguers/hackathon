@@ -7,6 +7,7 @@ import { Configuration } from "../infra/configuration"
 import ListFilesByPrefixService from "../core/service/ListFilesByPrefixService"
 import CompressFilesUseCase, { CompressFilesInput } from "../core/usecase/CompressFilesUseCase"
 import CompressService from "../core/service/CompressService"
+import ChangeVideoStatusQueueService from "../core/service/ChangeVideoStatusQueueService"
 
 @injectable()
 export default class FileController {
@@ -17,12 +18,13 @@ export default class FileController {
         @inject(TYPES.UploadFileService) private readonly uploadFileService: UploadFileService,
         @inject(TYPES.Configuration) private readonly configuration: Configuration,
         @inject(TYPES.ListFilesByPrefixService) private readonly listFilesByPrefixService: ListFilesByPrefixService,
-        @inject(TYPES.CompressService) private readonly compressService: CompressService
+        @inject(TYPES.CompressService) private readonly compressService: CompressService,
+        @inject(TYPES.ChangeVideoStatusQueueService) private readonly changeVideoStatusService: ChangeVideoStatusQueueService
     ) {}
 
     async compress(input: CompressFilesInput) {
         const usecase = new CompressFilesUseCase(this.logger, this.compressService, this.downloadFileService, 
-            this.uploadFileService, this.listFilesByPrefixService, this.configuration)
+            this.uploadFileService, this.listFilesByPrefixService, this.changeVideoStatusService, this.configuration)
         return usecase.execute(input)
     }
 }

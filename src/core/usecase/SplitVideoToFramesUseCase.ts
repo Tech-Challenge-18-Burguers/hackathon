@@ -8,6 +8,8 @@ import * as fs from 'fs'
 import { splitArrayIntoChunks } from "../../helper/arrayHelper"
 import Logger from "../../infra/logger/Logger"
 import CompressQueueService from "../service/CompressQueueService"
+import ChangeVideoStatusQueueService from "../service/ChangeVideoStatusQueueService"
+import { VideoStatus } from "../entity/Video"
 
 export type SplitVideoToFramesInput = {
     id: string
@@ -28,6 +30,7 @@ export default class SplitVideoToFramesUseCase {
         private readonly uploadFileService: UploadFileService,
         private readonly splitVideoService: SplitVideoFramesService,
         private readonly compressQueueService: CompressQueueService,
+        private readonly changeVideoStatusService: ChangeVideoStatusQueueService,
         private readonly configuration: Configuration,
         private readonly logger: Logger
     ) {}
@@ -35,12 +38,14 @@ export default class SplitVideoToFramesUseCase {
     async execute(input: SplitVideoToFramesInput): Promise<SplitVideoToFramesOutput> {
 
         const workdir = path.join(this.configuration.TMP_DIR, input.id)
-
+        
         if(!fs.existsSync(workdir)) {
             this.logger.debug(`Create a workdir ${workdir}`)
             fs.mkdirSync(workdir)
         }
-
+        
+        await this.changeVideoStatusService.send({ id: input.id, status: VideoStatus.PROCESSING })
+        
         const downloadMetadata = { 
             bucket: input.bucket, 
             key: input.key, 

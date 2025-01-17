@@ -40,7 +40,7 @@ export default abstract class DynamoDBRepository {
     protected async getItemById<T>(id: any): Promise<T> {
         const command: GetItemCommandInput = {
             TableName: this.tableName,
-            Key: id
+            Key: { id: { S: id } }
         }
         this.logger.debug(`Create GetItemCommandInput`, { command })
         const response = await this.client.send(new GetItemCommand(command))
@@ -66,20 +66,21 @@ export default abstract class DynamoDBRepository {
 
         const command: UpdateCommandInput = {
             TableName: this.tableName,
-            Key: { id: { S: id }  },
+            Key: { id: id },
             UpdateExpression: updateExpression,
             ExpressionAttributeNames: expressionAttributesNames,
             ExpressionAttributeValues: expressionAttributesValues,
-            ReturnValues: "ALL_NEW"
+            ReturnValues: "ALL_NEW",
         }
+        
         this.logger.debug(`Create UpdateCommand`, { command })
-
         const response = await this.client.send(new UpdateCommand(command))
+        this.logger.debug(`Response to command`, { command, response })
         if(response.$metadata.httpStatusCode !== 200) {
             throw new Error(`UpdateItem Failed`)
         }
         if(response.Attributes) {
-            return this.convertFromSchema(response.Attributes) as T
+            return response.Attributes as T
         }
         return attributes as T
     }
@@ -121,7 +122,7 @@ export default abstract class DynamoDBRepository {
         return schema as Record<string, AttributeValue> | undefined
     }
 
-    protected convertFromSchema(schema: Schema): Entity {
+    protected convertFromSchema(schema: any): Entity {
         const entity: Entity = {}
 
         for (const key in schema) {

@@ -15,5 +15,6 @@ export const TYPES = {
     CompressQueueService: Symbol.for('CompressQueueService'),
     DynamoDBClient: Symbol.for('DynamoDBClient'),
     VideoRepository: Symbol.for('VideoRepository'),
-    StorageService: Symbol.for('StorageService')
+    StorageService: Symbol.for('StorageService'),
+    ChangeVideoStatusQueueService: Symbol.for('ChangeVideoStatusQueueService')
 }

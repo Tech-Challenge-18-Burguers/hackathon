@@ -6,7 +6,7 @@ custom:
   queueCompressVideo: compress-video-queue
   queueStatusVideo: status-video-queue
   bucketName: video-data
-  dynamoDBTable: videos
+  dynamoDBTable: videos-tst
 
 provider:
   name: aws
@@ -21,6 +21,9 @@ provider:
           Resource: '*'
         - Effect: Allow
           Action: 'sqs:*'
+          Resource: '*'
+        - Effect: Allow
+          Action: 'dynamodb:*'
           Resource: '*'
         - Effect: Allow
           Action:
@@ -125,13 +128,12 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
-          - AttributeName: userId
-            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-          - AttributeName: userId
-            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
   
 plugins:
   - serverless-plugin-typescript

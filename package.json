@@ -11,7 +11,7 @@
     "test:local:create": "npm run pretest:local && serverless invoke local -f create -p __payloads/.data/create.json",
     "test:local:update": "npm run pretest:local && serverless invoke local -f update -p __payloads/.data/update.json",
     "test:local:presignurl": "npm run pretest:local && serverless invoke local -f presignurl -p __payloads/.data/presignurl.json",
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy --verbose"
   },
   "devDependencies": {
     "@types/archiver": "^6.0.3",

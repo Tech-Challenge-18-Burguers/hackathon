@@ -7,6 +7,8 @@ import UploadFileService from "../service/UploadFileService";
 import * as path from 'path'
 import * as fs from 'fs'
 import { splitArrayIntoChunks } from "../../helper/arrayHelper";
+import ChangeVideoStatusQueueService from "../service/ChangeVideoStatusQueueService";
+import { VideoStatus } from "../entity/Video";
 
 export type CompressFilesInput = {
     id: string
@@ -21,10 +23,12 @@ export default class CompressFilesUseCase {
         private readonly downloadService: DownloadFileService,
         private readonly uploadService: UploadFileService,
         private readonly listFilesByPrefixService: ListFilesByPrefixService,
+        private readonly changeVideoStatusService: ChangeVideoStatusQueueService,
         private readonly configuration: Configuration
     ) {}
 
     async execute(input: CompressFilesInput): Promise<void> {
+        await this.changeVideoStatusService.send({ id: input.id, status: VideoStatus.COMPRESSING })
         const prefix = `${input.id}/frames`
         const workdir = path.join(this.configuration.TMP_DIR, `${input.id}-frames`)
 

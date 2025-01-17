@@ -26,6 +26,8 @@ import VideoRepository from "../core/repository/VideoRepository"
 import VideoRepositoryDynamoDB from "../application/repository/VideoRepositoryDynamoDB"
 import StorageService from "../core/service/StorageService"
 import StorageServiceImpl from "../application/service/StorageServiceImpl"
+import ChangeVideoStatusQueueService from "../core/service/ChangeVideoStatusQueueService"
+import ChangeVideoStatusQueueServiceImpl from "../application/service/ChangeVideoStatusQueueServiceImpl"
 
 const container = new Container()
 
@@ -45,6 +47,7 @@ container.bind<TriggerQueueService>(TYPES.TriggerQueueService).to(TriggerQueueSe
 container.bind<ListFilesByPrefixService>(TYPES.ListFilesByPrefixService).to(ListFilesByPrefixServiceImpl)
 container.bind<CompressQueueService>(TYPES.CompressQueueService).to(CompressQueueServiceImpl)
 container.bind<StorageService>(TYPES.StorageService).to(StorageServiceImpl)
+container.bind<ChangeVideoStatusQueueService>(TYPES.ChangeVideoStatusQueueService).to(ChangeVideoStatusQueueServiceImpl)
 
 container.bind<VideoController>(TYPES.VideoController).to(VideoController)
 container.bind<FileController>(TYPES.FileController).to(FileController)

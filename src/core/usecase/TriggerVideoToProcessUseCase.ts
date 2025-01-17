@@ -1,4 +1,6 @@
 import Logger from "../../infra/logger/Logger";
+import { VideoStatus } from "../entity/Video";
+import ChangeVideoStatusQueueService from "../service/ChangeVideoStatusQueueService";
 import TriggerQueueService from "../service/TriggerQueueService";
 
 export type TriggerVideoInput = {
@@ -10,11 +12,13 @@ export default class TriggerVideoToProcessUseCase {
     
     constructor(
         private readonly logger: Logger,
-        private readonly queueService: TriggerQueueService
+        private readonly queueService: TriggerQueueService,
+        private readonly changeVideoStatusService: ChangeVideoStatusQueueService,
     ) {}
 
     async execute(input: TriggerVideoInput): Promise<void> {
         const id = this.extractId(input.key)
+        await this.changeVideoStatusService.send({ id, status: VideoStatus.UPLOAD_COMPLETED })
 
         const videoMetadata = {
             bucket: input.bucket,
