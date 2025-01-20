@@ -43,13 +43,13 @@ functions:
   trigger:
     handler: src/handler/trigger.handler
     timeout: 30
-    events:
-      - s3:
-          bucket: ${aws:accountId}-${opt:stage, 'dev'}-video-data
-          event: s3:ObjectCreated:*
-          rules:
-            - suffix: .mp4
-          existing: true
+    # events:
+    #   - s3:
+    #       bucket: ${aws:accountId}-${opt:stage, 'dev'}-video-data
+    #       event: s3:ObjectCreated:*
+    #       rules:
+    #         - suffix: .mp4
+    #       existing: true
   compress:
     handler: src/handler/compress.handler
     timeout: 900
