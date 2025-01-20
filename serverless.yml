@@ -1,5 +1,4 @@
 service: hackathon-services
-
 custom:
   currentStage: ${opt:stage, 'dev'}
   queueProcessVideo: process-video-queue
@@ -45,7 +44,7 @@ build:
   esbuild: false
 
 package:
-  individually: true
+  individually: false
 
 functions:
   trigger:
