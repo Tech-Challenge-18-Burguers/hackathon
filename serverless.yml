@@ -45,7 +45,7 @@ functions:
     timeout: 30
     events:
       - s3:
-          bucket: ${aws:accountId}-${self:custom.currentStage}-${self:custom.bucketName}
+          bucket: ${aws:accountId}-${opt:stage, 'dev'}-video-data
           event: s3:ObjectCreated:*
           rules:
             - suffix: .mp4
