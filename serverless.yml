@@ -1,11 +1,4 @@
 service: hackathon-services
-custom:
-  currentStage: ${opt:stage, 'dev'}
-  queueProcessVideo: process-video-queue
-  queueCompressVideo: compress-video-queue
-  queueStatusVideo: status-video-queue
-  bucketName: video-data
-  dynamoDBTable: videos
 
 provider:
   name: aws
@@ -34,11 +27,11 @@ provider:
           Resource: "*"
   environment:
     TMP_DIR: '/tmp'
-    PROCESS_VIDEO_QUEUE_NAME: ${self:custom.queueProcessVideo}
-    COMPRESS_VIDEO_QUEUE_NAME: ${self:custom.queueCompressVideo}
-    STATUS_QUEUE_NAME: ${self:custom.queueStatusVideo}
-    DATA_BUCKET_NAME: ${aws:accountId}-${self:custom.currentStage}-${self:custom.bucketName}
-    VIDEO_TABLE: ${self:custom.dynamoDBTable}
+    PROCESS_VIDEO_QUEUE_NAME: process-video-queue-${opt:stage, 'dev'}
+    COMPRESS_VIDEO_QUEUE_NAME: compress-video-queue-${opt:stage, 'dev'}
+    STATUS_QUEUE_NAME: status-video-queue-${opt:stage, 'dev'}
+    DATA_BUCKET_NAME: ${aws:accountId}-${opt:stage, 'dev'}-video-data
+    VIDEO_TABLE: videos-${opt:stage, 'dev'}
 
 build:
   esbuild: false
@@ -103,27 +96,27 @@ resources:
     ProcessQueueSQS:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: ${self:custom.queueProcessVideo}
+        QueueName: process-video-queue-${opt:stage, 'dev'}
         VisibilityTimeout: 900
     CompressQueueSQS:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: ${self:custom.queueCompressVideo}
+        QueueName: compress-video-queue-${opt:stage, 'dev'}
         VisibilityTimeout: 900
     StatusQueueSQS:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: ${self:custom.queueStatusVideo}
+        QueueName: status-video-queue-${opt:stage, 'dev'}
         VisibilityTimeout: 30
     BucketData:
       Type: "AWS::S3::Bucket"
       Properties:
-        BucketName: ${aws:accountId}-${self:custom.currentStage}-${self:custom.bucketName}
+        BucketName: ${aws:accountId}-${opt:stage, 'dev'}-video-data
         AccessControl: Private
     DynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.dynamoDBTable}
+        TableName: videos-${opt:stage, 'dev'}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
