@@ -58,4 +58,4 @@ jobs:
       - name: Serverless Deploy
         uses: serverless/github-action@v3.2
         with:
-          args: deploy --stage dev --region us-east-1 --verbose --debug
+          args: deploy --stage dev --region us-east-1 --verbose
