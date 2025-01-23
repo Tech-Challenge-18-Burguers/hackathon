@@ -25,9 +25,6 @@ provider:
             - tag:TagResources
             - tag:UntagResources
           Resource: "*"
-        - Effect: 'Allow'
-          Actions: lambda:InvokeFunction
-          Resource: '*'
 
   environment:
     TMP_DIR: '/tmp'
@@ -81,10 +78,7 @@ functions:
   create:
     handler: src/handler/create.handler
     timeout: 30
-    events:
-      - http:
-          path: video
-          method: post
+    
   update:
     handler: src/handler/update.handler
     timeout: 30
@@ -98,10 +92,6 @@ functions:
   presignurl:
     handler: src/handler/presignurl.handler
     timeout: 30
-    events:
-      - http:
-          path: video
-          method: put
 
 resources:
   Resources: 
