@@ -78,6 +78,10 @@ functions:
   create:
     handler: src/handler/create.handler
     timeout: 30
+    events:
+      - http:
+          path: video
+          method: post
     
   update:
     handler: src/handler/update.handler
