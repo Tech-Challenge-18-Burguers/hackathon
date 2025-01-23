@@ -27,8 +27,7 @@ provider:
           Resource: "*"
         - Effect: 'Allow'
           Actions: lambda:InvokeFunction
-          Resource:
-            - arn:aws:lambda:${self:provider.region}:*:function:${self:service}-${self:provider.stage}-video
+          Resource: '*'
 
   environment:
     TMP_DIR: '/tmp'
