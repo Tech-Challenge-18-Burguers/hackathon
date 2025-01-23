@@ -25,6 +25,11 @@ provider:
             - tag:TagResources
             - tag:UntagResources
           Resource: "*"
+        - Effect: 'Allow'
+          Actions: lambda:InvokeFunction
+          Resource:
+            - arn:aws:lambda:${self:provider.region}:*:function:${self:service}-${self:provider.stage}-video
+
   environment:
     TMP_DIR: '/tmp'
     PROCESS_VIDEO_QUEUE_NAME: process-video-queue-${opt:stage, 'dev'}
