@@ -17,14 +17,14 @@ provider:
         - Effect: Allow
           Action: 'dynamodb:*'
           Resource: '*'
-        - Effect: Allow
-          Action:
-            - iam:CreateRole
-            - iam:PassRole
-            - tag:GetResources
-            - tag:TagResources
-            - tag:UntagResources
-          Resource: "*"
+        # - Effect: Allow
+        #   Action:
+        #     - iam:CreateRole
+        #     - iam:PassRole
+        #     - tag:GetResources
+        #     - tag:TagResources
+        #     - tag:UntagResources
+        #   Resource: "*"
 
   environment:
     TMP_DIR: '/tmp'
