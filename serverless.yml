@@ -98,8 +98,8 @@ functions:
     timeout: 30
     events:
       - http:
-        path: video/url
-        method: post
+          path: video/url
+          method: post
 
 resources:
   Resources: 
