@@ -164,6 +164,11 @@ resources:
         ProviderARNs:
           - Fn::GetAtt: [CognitoUserPool, Arn]
   Outputs:
+    ApiGatewayUrl:
+      Value:
+        Fn::Sub: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/"
+      Export:
+        Name: ApiGatewayUrl
     UserPoolId:
       Value:
         Ref: CognitoUserPool
