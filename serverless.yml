@@ -53,8 +53,8 @@ functions:
   compress:
     handler: src/handler/compress.handler
     timeout: 900
-    memorySize: 5120
-    ephemeralStorageSize: 5120
+    memorySize: 512
+    ephemeralStorageSize: 512
     events:
       - sqs:
           arn:
@@ -65,8 +65,8 @@ functions:
   process:
     handler: src/handler/process.handler
     timeout: 900
-    memorySize: 5120
-    ephemeralStorageSize: 5120
+    memorySize: 512
+    ephemeralStorageSize: 512
     events:
       - sqs:
           arn:
