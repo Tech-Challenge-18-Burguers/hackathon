@@ -43,13 +43,13 @@ functions:
   trigger:
     handler: src/handler/trigger.handler
     timeout: 30
-    # events:
-    #   - s3:
-    #       bucket: ${aws:accountId}-${opt:stage, 'dev'}-video-data
-    #       event: s3:ObjectCreated:*
-    #       rules:
-    #         - suffix: .mp4
-    #       existing: true
+    events:
+      - s3:
+          bucket: ${aws:accountId}-${opt:stage, 'dev'}-video-data
+          event: s3:ObjectCreated:*
+          rules:
+            - suffix: .mp4
+          existing: true
   compress:
     handler: src/handler/compress.handler
     timeout: 900
@@ -77,6 +77,10 @@ functions:
   create:
     handler: src/handler/create.handler
     timeout: 30
+    events:
+      - http:
+          path: video
+          method: post
   update:
     handler: src/handler/update.handler
     timeout: 30
@@ -90,6 +94,10 @@ functions:
   presignurl:
     handler: src/handler/presignurl.handler
     timeout: 30
+    events:
+      - http:
+          path: video
+          method: put
 
 resources:
   Resources: 
