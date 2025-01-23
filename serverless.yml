@@ -136,7 +136,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-     ApiGatewayRestApi:
+    ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
       Properties:
         Name: ${opt:stage, 'dev'}-hackathon-services
