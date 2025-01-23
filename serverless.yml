@@ -136,6 +136,11 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+     ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${opt:stage, 'dev'}-hackathon-services
+        Description: "API Gateway for Integration with Lambdas Functions"
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
@@ -163,12 +168,10 @@ resources:
         IdentitySource: method.request.header.Authorization
         ProviderARNs:
           - Fn::GetAtt: [CognitoUserPool, Arn]
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
   Outputs:
-    ApiGatewayUrl:
-      Value:
-        Fn::Sub: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/"
-      Export:
-        Name: ApiGatewayUrl
     UserPoolId:
       Value:
         Ref: CognitoUserPool
@@ -179,6 +182,11 @@ resources:
         Ref: CognitoUserPoolClient
       Export:
         Name: CognitoUserPoolClientId
+    ApiGatewayRestApiId:
+      Value:
+        Ref: ApiGatewayRestApi
+      Export:
+        Name: ApiGatewayRestApiId
 
   
 plugins:
