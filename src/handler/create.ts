@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyResultV2 } from "aws-lambda";
 import { container } from "../infra/container";
 import Logger from "../infra/logger/Logger";
 import { TYPES } from "../types";
@@ -7,7 +7,7 @@ import VideoController from "../controller/VideoController";
 import parseRecordBody from "../helper/awsEventHelper";
 import { getAuthenticatedUser } from "../helper/authenticatedUser";
 
-export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
+export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
     const logger = container.get<Logger>(TYPES.Logger)
 
     try {
