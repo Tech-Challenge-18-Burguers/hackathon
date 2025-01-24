@@ -82,6 +82,10 @@ functions:
       - http:
           path: video
           method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CognitoUserPoolAuthorizer
     
   update:
     handler: src/handler/update.handler
