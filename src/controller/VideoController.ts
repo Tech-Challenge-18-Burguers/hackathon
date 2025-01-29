@@ -16,6 +16,8 @@ import UpdateVideoUseCase from "../core/usecase/UpdateVideoUseCase"
 import GeneratePreSignedUrlUseCase, { PreSignUrlInput } from "../core/usecase/GeneratePreSignedUrlUseCase"
 import StorageService from "../core/service/StorageService"
 import ChangeVideoStatusQueueService from "../core/service/ChangeVideoStatusQueueService"
+import ListVideosUseCase, { ListVideosInput } from "../core/usecase/ListVideosUseCase"
+import GetVideoByIdUseCase, { GetVideoByIdInput } from "../core/usecase/GetVideoByIdUseCase"
 
 @injectable()
 export default class VideoController {
@@ -57,6 +59,16 @@ export default class VideoController {
     async generatePresignUrl(input: PreSignUrlInput) {
         const usecase = new GeneratePreSignedUrlUseCase(this.logger, this.storageService, 
             this.videoRepository, this.changeVideoStatusService, this.configuration)
+        return usecase.execute(input)
+    }
+
+    async list(input: ListVideosInput) {
+        const usecase = new ListVideosUseCase(this.videoRepository, this.logger)
+        return usecase.execute(input)
+    }
+
+    async getById(input: GetVideoByIdInput) {
+        const usecase = new GetVideoByIdUseCase(this.videoRepository, this.logger)
         return usecase.execute(input)
     }
 }

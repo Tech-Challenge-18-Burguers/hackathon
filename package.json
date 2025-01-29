@@ -11,6 +11,8 @@
     "test:local:create": "npm run pretest:local && serverless invoke local -f create -p __payloads/.data/create.json",
     "test:local:update": "npm run pretest:local && serverless invoke local -f update -p __payloads/.data/update.json",
     "test:local:presignurl": "npm run pretest:local && serverless invoke local -f presignurl -p __payloads/.data/presignurl.json",
+    "test:local:list": "npm run pretest:local && serverless invoke local -f list -p __payloads/.data/presignurl.json",
+    "test:local:getById": "npm run pretest:local && serverless invoke local -f getById -p __payloads/.data/getById.json",
     "deploy": "serverless deploy --verbose"
   },
   "devDependencies": {

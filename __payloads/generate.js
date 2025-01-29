@@ -7,6 +7,7 @@ const modelCompress = require('./model/compress.json')
 const modelCreate = require('./model/create.json')
 const modelUpdate = require('./model/update.json')
 const modelPresignUrl = require('./model/presignurl.json')
+const getById = require('./model/getById.json')
 
 function setBody(event, body) {
     event.Records[0].body = JSON.stringify(body)
@@ -29,3 +30,4 @@ fs.writeFileSync(path.join(workdir, 'compress.json'), setBody(sqsEvent, modelCom
 fs.writeFileSync(path.join(workdir, 'update.json'), setBody(sqsEvent, modelUpdate))
 fs.writeFileSync(path.join(workdir, 'create.json'), setBodyProxy(apiGatewayProxyEvent, modelCreate))
 fs.writeFileSync(path.join(workdir, 'presignurl.json'), setBodyProxy(apiGatewayProxyEvent, modelPresignUrl))
+fs.writeFileSync(path.join(workdir, 'getById.json'), setBodyProxy(apiGatewayProxyEvent, getById))

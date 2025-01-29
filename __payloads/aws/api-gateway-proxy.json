@@ -13,7 +13,8 @@
     ]
   },
   "pathParameters": {
-    "proxy": "/path/to/resource"
+    "proxy": "/path/to/resource",
+    "id": "f8b72573-edaf-4363-bda5-4d15d1770fa9"
   },
   "stageVariables": {
     "baz": "qux"

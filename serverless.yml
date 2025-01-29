@@ -104,6 +104,32 @@ functions:
       - http:
           path: video/url
           method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CognitoUserPoolAuthorizer
+  list:
+    handler: src/handler/list.handler
+    timeout: 30
+    events:
+      - http:
+          path: video
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CognitoUserPoolAuthorizer
+  getById:
+    handler: src/handler/getById.handler
+    timeout: 30
+    events:
+      - http:
+          path: video/{id}
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CognitoUserPoolAuthorizer
 
 resources:
   Resources: 
@@ -195,3 +221,4 @@ resources:
   
 plugins:
   - serverless-plugin-typescript
+  - serverless-offline

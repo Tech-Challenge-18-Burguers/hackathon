@@ -7,7 +7,8 @@ import {
     GetItemCommandInput,
     PutItemCommand,
     PutItemCommandInput, 
-    QueryCommand
+    QueryCommand,
+    ScanCommand
 } from "@aws-sdk/client-dynamodb"
 
 export interface Schema {
@@ -44,6 +45,7 @@ export default abstract class DynamoDBRepository {
         }
         this.logger.debug(`Create GetItemCommandInput`, { command })
         const response = await this.client.send(new GetItemCommand(command))
+
         if(response.$metadata.httpStatusCode !== 200) {
             throw new Error(`GetItemById Failed`)
         }
@@ -88,13 +90,13 @@ export default abstract class DynamoDBRepository {
     protected async findByFilter<T>(attibuteKey: string, attributeValue: any): Promise<Array<T>> {
         const command: QueryCommandInput = {
             TableName: this.tableName,
-            FilterExpression: '#attr = :value',
-            ExpressionAttributeNames: { '#attr': attibuteKey },
-            ExpressionAttributeValues: { ':value': attributeValue }
+            FilterExpression: `${attibuteKey} = :value`,
+            ExpressionAttributeValues: { ':value': { S: attributeValue }  }
         }
         this.logger.debug(`Create QueryCommand`, { command })
 
-        const response = await this.client.send(new QueryCommand(command))
+        const response = await this.client.send(new ScanCommand(command))
+
         if(response.$metadata.httpStatusCode !== 200) {
             throw new Error(`UpdateItem Failed`)
         }
