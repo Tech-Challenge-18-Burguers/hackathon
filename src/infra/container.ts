@@ -28,6 +28,10 @@ import StorageService from "../core/service/StorageService"
 import StorageServiceImpl from "../application/service/StorageServiceImpl"
 import ChangeVideoStatusQueueService from "../core/service/ChangeVideoStatusQueueService"
 import ChangeVideoStatusQueueServiceImpl from "../application/service/ChangeVideoStatusQueueServiceImpl"
+import IdentityService from "../core/service/IdentityService"
+import IdentityServiceImpl from "../application/service/IndentityServiceImpl"
+import AwsCognitoClient from "./aws/AwsCognitoClient"
+import UserController from "../controller/UserController"
 
 const container = new Container()
 
@@ -36,6 +40,7 @@ container.bind<Configuration>(TYPES.Configuration).toConstantValue(configuration
 container.bind<AwsS3Client>(TYPES.S3Client).toConstantValue(new AwsS3Client())
 container.bind<AwsSqsClient>(TYPES.SQSClient).toConstantValue(new AwsSqsClient())
 container.bind<AwsDynamoDBClient>(TYPES.DynamoDBClient).toConstantValue(new AwsDynamoDBClient())
+container.bind<AwsCognitoClient>(TYPES.CognitoClient).toConstantValue(new AwsCognitoClient())
 
 container.bind<VideoRepository>(TYPES.VideoRepository).to(VideoRepositoryDynamoDB)
 
@@ -48,8 +53,10 @@ container.bind<ListFilesByPrefixService>(TYPES.ListFilesByPrefixService).to(List
 container.bind<CompressQueueService>(TYPES.CompressQueueService).to(CompressQueueServiceImpl)
 container.bind<StorageService>(TYPES.StorageService).to(StorageServiceImpl)
 container.bind<ChangeVideoStatusQueueService>(TYPES.ChangeVideoStatusQueueService).to(ChangeVideoStatusQueueServiceImpl)
+container.bind<IdentityService>(TYPES.IdentityService).to(IdentityServiceImpl)
 
 container.bind<VideoController>(TYPES.VideoController).to(VideoController)
 container.bind<FileController>(TYPES.FileController).to(FileController)
+container.bind<UserController>(TYPES.UserController).to(UserController)
 
 export { container }
