@@ -33,6 +33,8 @@ provider:
     STATUS_QUEUE_NAME: status-video-queue-${opt:stage, 'dev'}
     DATA_BUCKET_NAME: ${aws:accountId}-${opt:stage, 'dev'}-video-data
     VIDEO_TABLE: videos-${opt:stage, 'dev'}
+    COGNITO_POOL_ID: ${cf:${self:service}-${self:provider.stage}.UserPoolId}
+    COGNITO_CLIENT_ID: ${cf:${self:service}-${self:provider.stage}.UserPoolClientId}
 
 build:
   esbuild: false
@@ -130,6 +132,12 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: CognitoUserPoolAuthorizer
+  user:
+    handler: src/handler/user.handler
+    timeout: 30
+  authenticate:
+    handler: src/handler/authenticate.handler
+    timeout: 30
 
 resources:
   Resources: 
