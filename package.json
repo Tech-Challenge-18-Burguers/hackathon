@@ -15,9 +15,12 @@
     "test:local:getById": "npm run pretest:local && serverless invoke local -f getById -p __payloads/.data/getById.json",
     "test:local:user": "npm run pretest:local && serverless invoke local -f user -p __payloads/.data/user.json",
     "test:local:authenticate": "npm run pretest:local && serverless invoke local -f authenticate -p __payloads/.data/user.json",
-    "deploy": "serverless deploy --verbose"
+    "deploy": "serverless deploy --verbose",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.4.0",
     "@types/archiver": "^6.0.3",
     "@types/aws-lambda": "^8.10.147",
     "@types/jest": "^29.5.14",
