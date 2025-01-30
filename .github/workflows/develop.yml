@@ -38,7 +38,7 @@ jobs:
         run: |
           echo "Waiting for SonarQube analysis to complete..."
           sleep 20
-          result=$(curl -u "$SONAR_TOKEN": "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY&&pullRequest=$PR_ID")
+          result=$(curl -u "$SONAR_TOKEN": "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY&&branch=${{ github.head_ref }}")
           status=$(echo "$result" | jq -r '.projectStatus.status')
           enabled="$QUALITY_GATE_ENABLED"
 
