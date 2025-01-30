@@ -1,4 +1,3 @@
-import { APIGatewayProxyEvent } from "aws-lambda"
 import { getAuthenticatedUser } from "../../helper/authenticatedUser"
 
 describe('authenticatedUser', () => {
