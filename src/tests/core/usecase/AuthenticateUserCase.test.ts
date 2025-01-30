@@ -1,5 +1,6 @@
+import { faker } from '@faker-js/faker'
+
 import IdentityServiceImpl from "../../../application/service/IndentityServiceImpl"
-import IdentityService from "../../../core/service/IdentityService"
 import AuthenticateUseCase from "../../../core/usecase/AuthenticateUserCase"
 import AwsCognitoClient from "../../../infra/aws/AwsCognitoClient"
 import { configuration } from "../../../infra/configuration"
@@ -16,10 +17,14 @@ describe('AuthenticateUserCase', () => {
         const client: AwsCognitoClient = jest.mocked(new AwsCognitoClient())
         const service = jest.mocked(new IdentityServiceImpl(client, logger, configuration))
     
-        service.authenticate = jest.fn().mockResolvedValue({ token: 'eytlhsot', type: 'Bearer', expireIn: 3900 })
+        service.authenticate = jest.fn().mockResolvedValue({ 
+            token: faker.string.uuid(), 
+            type: 'Bearer', 
+            expireIn: 3900 
+        })
 
         const usecase = new AuthenticateUseCase(service, logger)
-        const response = usecase.execute({ username: 'user@test.com', password: '123456' })
+        const response = usecase.execute({ username: faker.internet.email(), password: faker.internet.password() })
         expect(response).resolves.not.toBeNull()
     })
 })
