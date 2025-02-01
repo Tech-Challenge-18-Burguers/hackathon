@@ -13,23 +13,28 @@ describe('UpdateVideoUseCase', () => {
         jest.clearAllMocks()
     })
 
-    it('should be create user', () => {
+    it('should be update video', () => {
         const logger = new Logger()
         const client: DynamoDBClient = jest.mocked(new DynamoDBClient())
         const repository = jest.mocked(new VideoRepositoryDynamoDB(logger, client, configuration))
-    
-        repository.update = jest.fn().mockResolvedValue({ 
+
+        var mockVideoUpdate = { 
             id: faker.string.uuid(),
             name: "teste nome upload",
             description: "teste upload",
             status: 'UPLOAD_COMPLETED',
             userId: faker.string.uuid(), 
-        })
+        }
+    
+        repository.update = jest.fn().mockResolvedValue(mockVideoUpdate)
 
 
 
         const usecase = new UpdateVideoUseCase(logger, repository)
-        const response = usecase.execute({ id: faker.string.uuid() , userId: faker.string.uuid() , status:VideoStatus.UPLOAD_COMPLETED })
-        expect(response).resolves.not.toBeNull()
+        usecase.execute({ id: faker.string.uuid() , userId: faker.string.uuid() , status:VideoStatus.UPLOAD_COMPLETED }).then(
+            response => {
+                expect(response.id).toBe(mockVideoUpdate.id)
+            }
+        )
     })
 })
