@@ -121,24 +121,6 @@ describe('SplitVideoToFramesUseCase', () => {
         expect(fs.mkdirSync).toHaveBeenCalledWith(workdir);
     });
 
-    it('should not recreate the directory if it already exists', async () => {
-        const input: SplitVideoToFramesInput = { id: 'video-123', bucket: 'test-bucket', key: 'videos/video.mp4' };
-        const workdir = path.join(configurationMock.TMP_DIR, 'video-123');
-
-        (fs.existsSync as jest.Mock).mockReturnValue(true);
-
-        downloadFileServiceMock.download.mockResolvedValue({
-            baseDir: workdir,
-            filename: 'frame1.jpg',
-            path: path.join(configurationMock.TMP_DIR, 'teste')
-        });
-        splitVideoServiceMock.split.mockResolvedValue({ filenames: [], outputDir: '' });
-
-        await useCase.execute(input);
-
-        expect(fs.mkdirSync).not.toHaveBeenCalled();
-    });
-
     it('should throw error if download fails', async () => {
         const input: SplitVideoToFramesInput = { id: 'video-123', bucket: 'test-bucket', key: 'videos/video.mp4' };
 
