@@ -6,4 +6,7 @@ module.exports = {
     collectCoverage: true,
     coverageReporters: ['json', 'lcov'],
     coverageDirectory: 'coverage',
+    coveragePathIgnorePatterns: [
+        "/src/application/"
+    ]
 };
