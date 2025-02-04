@@ -4,6 +4,7 @@ import Logger from "../../infra/logger/Logger";
 import { Configuration } from "../../infra/configuration";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../types";
+import { randomUUID } from "node:crypto";
 
 @injectable()
 export default class IdentityServiceImpl implements IdentityService {
@@ -17,9 +18,10 @@ export default class IdentityServiceImpl implements IdentityService {
     async createUser(input: CreateUserInput): Promise<CreateUserOutput> {
         const command = new AdminCreateUserCommand({
             UserPoolId: this.configuration.COGNITO_POOL_ID,
-            Username: input.username,
+            Username: randomUUID(),
             UserAttributes: [
                 { Name: 'name', Value: input.name },
+                { Name: 'email', Value: input.username },
                 { Name: 'email_verified', Value: 'true' }
             ],
             TemporaryPassword: input.password,
