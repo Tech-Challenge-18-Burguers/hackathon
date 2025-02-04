@@ -10,7 +10,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const logger = container.get<Logger>(TYPES.Logger)
 
     try {
-        const controller = container.get<UserController>(TYPES.VideoController)
+        const controller = container.get<UserController>(TYPES.UserController)
         const input = { ...parseRecordBody(event.body) }
         const response = await controller.createUser(input)
         return {
