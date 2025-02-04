@@ -33,8 +33,8 @@ provider:
     STATUS_QUEUE_NAME: status-video-queue-${opt:stage, 'dev'}
     DATA_BUCKET_NAME: ${aws:accountId}-${opt:stage, 'dev'}-video-data
     VIDEO_TABLE: videos-${opt:stage, 'dev'}
-    COGNITO_POOL_ID: ${cf:hackathon-services-${opt:stage, 'dev'}.UserPoolId}
-    COGNITO_CLIENT_ID: ${cf:hackathon-services-${opt:stage, 'dev'}.UserPoolClientId}
+    COGNITO_POOL_ID: ${cf:hackathon-services-${opt:stage, 'dev'}.CognitoUserPoolId}
+    COGNITO_CLIENT_ID: ${cf:hackathon-services-${opt:stage, 'dev'}.CognitoUserPoolClientId}
 
 build:
   esbuild: false
