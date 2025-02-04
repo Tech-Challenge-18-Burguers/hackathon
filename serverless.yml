@@ -135,9 +135,17 @@ functions:
   user:
     handler: src/handler/user.handler
     timeout: 30
+    events:
+      - http:
+          path: user
+          method: post
   authenticate:
     handler: src/handler/authenticate.handler
     timeout: 30
+    events:
+      - http:
+          path: login
+          method: post
 
 resources:
   Resources: 
