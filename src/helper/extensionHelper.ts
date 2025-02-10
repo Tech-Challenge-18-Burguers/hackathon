@@ -1,5 +1,5 @@
 export function removeExtension(filename: string) {
-    return filename.substring(0, filename.lastIndexOf('.') - 1)
+    return filename.substring(0, filename.lastIndexOf('.'))
 }
 
 export function getExtension(filename: string) {

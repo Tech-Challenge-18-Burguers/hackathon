@@ -4,7 +4,6 @@ import { container } from "../infra/container"
 import Logger from "../infra/logger/Logger"
 import { TYPES } from "../types"
 import VideoController from "../controller/VideoController"
-import parseRecordBody from "../helper/awsEventHelper"
 import { getAuthenticatedUser } from "../helper/authenticatedUser"
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -13,10 +12,8 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     try {
         logger.debug(`Received event`, { event })
         const controller = container.get<VideoController>(TYPES.VideoController)
-        const input = { ...parseRecordBody(event.body), userId: getAuthenticatedUser(event) }
-        const response = await controller.generatePresignUrl(input)
-        logger.info(`Generated with success`, { response })
-        
+        const input = { id: event.pathParameters?.id || '', userId: getAuthenticatedUser(event) }
+        const response = await controller.getById(input)
         return {
             statusCode: 200,
             body: JSON.stringify(response)

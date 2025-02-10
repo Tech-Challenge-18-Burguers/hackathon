@@ -1,22 +1,21 @@
 import 'reflect-metadata'
-import { APIGatewayProxyEvent, APIGatewayProxyResultV2 } from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { container } from "../infra/container";
 import Logger from "../infra/logger/Logger";
 import { TYPES } from "../types";
 import VideoController from "../controller/VideoController";
-import parseRecordBody from "../helper/awsEventHelper";
 import { getAuthenticatedUser } from "../helper/authenticatedUser";
 
-export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
+export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const logger = container.get<Logger>(TYPES.Logger)
 
     try {
         logger.debug(`Received event`, { event })
         const controller = container.get<VideoController>(TYPES.VideoController)
-        const input = { ...parseRecordBody(event.body), userId: getAuthenticatedUser(event) }
-        const response = await controller.create(input)
+        const userId = getAuthenticatedUser(event)
+        const response = await controller.list({ userId })
         return {
-            statusCode: 201,
+            statusCode: 200,
             body: JSON.stringify(response)
         }    
     } catch (error: any) {

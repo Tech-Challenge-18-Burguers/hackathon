@@ -22,6 +22,13 @@ export interface VideoInput {
     userId: string
 }
 
+export interface VideoOutput {
+    id: string
+    name: string
+    description?: string
+    status: VideoStatus
+} 
+
 export interface VideoUpdate {
     id: string
     status: VideoStatus

@@ -1,18 +1,10 @@
 service: hackathon-services
 
-custom:
-  currentStage: ${opt:stage, 'dev'}
-  queueProcessVideo: process-video-queue
-  queueCompressVideo: compress-video-queue
-  queueStatusVideo: status-video-queue
-  bucketName: video-data
-  dynamoDBTable: videos
-
 provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-1
-  # role: arn:aws:iam::674940554881:role/LabRole
+  role: arn:aws:iam::${aws:accountId}:role/LabRole
   iam:
     role:
       statements:
@@ -25,44 +17,47 @@ provider:
         - Effect: Allow
           Action: 'dynamodb:*'
           Resource: '*'
-        - Effect: Allow
-          Action:
-            - iam:CreateRole
-            - iam:PassRole
-            - tag:GetResources
-            - tag:TagResources
-            - tag:UntagResources
-          Resource: "*"
+        # - Effect: Allow
+        #   Action:
+        #     - iam:CreateRole
+        #     - iam:PassRole
+        #     - tag:GetResources
+        #     - tag:TagResources
+        #     - tag:UntagResources
+        #   Resource: "*"
+
   environment:
     TMP_DIR: '/tmp'
-    PROCESS_VIDEO_QUEUE_NAME: ${self:custom.queueProcessVideo}
-    COMPRESS_VIDEO_QUEUE_NAME: ${self:custom.queueCompressVideo}
-    STATUS_QUEUE_NAME: ${self:custom.queueStatusVideo}
-    DATA_BUCKET_NAME: ${aws:accountId}-${self:custom.bucketName}
-    VIDEO_TABLE: ${self:custom.dynamoDBTable}
+    PROCESS_VIDEO_QUEUE_NAME: process-video-queue-${opt:stage, 'dev'}
+    COMPRESS_VIDEO_QUEUE_NAME: compress-video-queue-${opt:stage, 'dev'}
+    STATUS_QUEUE_NAME: status-video-queue-${opt:stage, 'dev'}
+    DATA_BUCKET_NAME: ${aws:accountId}-${opt:stage, 'dev'}-video-data
+    VIDEO_TABLE: videos-${opt:stage, 'dev'}
+    COGNITO_POOL_ID: cognito-pool-id
+    COGNITO_CLIENT_ID: cognito-client-id
 
 build:
   esbuild: false
 
 package:
-  individually: true
+  individually: false
 
 functions:
   trigger:
     handler: src/handler/trigger.handler
     timeout: 30
-    events:
-      - s3:
-          bucket: ${aws:accountId}-${self:custom.bucketName}
-          event: s3:ObjectCreated:*
-          rules:
-            - suffix: .mp4
-          existing: true
+    # events:
+    #   - s3:
+    #       bucket: ${aws:accountId}-${opt:stage, 'dev'}-video-data
+    #       event: s3:ObjectCreated:*
+    #       rules:
+    #         - suffix: .mp4
+    #       existing: true
   compress:
     handler: src/handler/compress.handler
     timeout: 900
-    memorySize: 5120
-    ephemeralStorageSize: 5120
+    memorySize: 512
+    ephemeralStorageSize: 512
     events:
       - sqs:
           arn:
@@ -73,8 +68,8 @@ functions:
   process:
     handler: src/handler/process.handler
     timeout: 900
-    memorySize: 5120
-    ephemeralStorageSize: 5120
+    memorySize: 512
+    ephemeralStorageSize: 512
     events:
       - sqs:
           arn:
@@ -85,6 +80,15 @@ functions:
   create:
     handler: src/handler/create.handler
     timeout: 30
+    events:
+      - http:
+          path: video
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CognitoUserPoolAuthorizer
+    
   update:
     handler: src/handler/update.handler
     timeout: 30
@@ -98,33 +102,77 @@ functions:
   presignurl:
     handler: src/handler/presignurl.handler
     timeout: 30
+    events:
+      - http:
+          path: video/url
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CognitoUserPoolAuthorizer
+  list:
+    handler: src/handler/list.handler
+    timeout: 30
+    events:
+      - http:
+          path: video
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CognitoUserPoolAuthorizer
+  getById:
+    handler: src/handler/getById.handler
+    timeout: 30
+    events:
+      - http:
+          path: video/{id}
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: CognitoUserPoolAuthorizer
+  user:
+    handler: src/handler/user.handler
+    timeout: 30
+    events:
+      - http:
+          path: user
+          method: post
+  authenticate:
+    handler: src/handler/authenticate.handler
+    timeout: 30
+    events:
+      - http:
+          path: login
+          method: post
 
 resources:
   Resources: 
     ProcessQueueSQS:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: ${self:custom.queueProcessVideo}
+        QueueName: process-video-queue-${opt:stage, 'dev'}
         VisibilityTimeout: 900
     CompressQueueSQS:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: ${self:custom.queueCompressVideo}
+        QueueName: compress-video-queue-${opt:stage, 'dev'}
         VisibilityTimeout: 900
     StatusQueueSQS:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: ${self:custom.queueStatusVideo}
+        QueueName: status-video-queue-${opt:stage, 'dev'}
         VisibilityTimeout: 30
     BucketData:
       Type: "AWS::S3::Bucket"
       Properties:
-        BucketName: ${aws:accountId}-${self:custom.bucketName}
+        BucketName: ${aws:accountId}-${opt:stage, 'dev'}-video-data
         AccessControl: Private
     DynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.dynamoDBTable}
+        TableName: videos-${opt:stage, 'dev'}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -134,6 +182,59 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${opt:stage, 'dev'}-hackathon-services
+        Description: "API Gateway for Integration with Lambdas Functions"
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: hackathon-users
+        AliasAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        MfaConfiguration: OFF
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: hackathon-service-api
+        UserPoolId:
+          Ref: CognitoUserPool
+        GenerateSecret: false
+        ExplicitAuthFlows:
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+    CognitoUserPoolAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: CognitoUserPoolAuthorizer
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        ProviderARNs:
+          - Fn::GetAtt: [CognitoUserPool, Arn]
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPool
+      Export:
+        Name: CognitoUserPoolId
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient
+      Export:
+        Name: CognitoUserPoolClientId
+    ApiGatewayRestApiId:
+      Value:
+        Ref: ApiGatewayRestApi
+      Export:
+        Name: ApiGatewayRestApiId
+
   
 plugins:
   - serverless-plugin-typescript
+  - serverless-offline

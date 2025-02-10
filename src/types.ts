@@ -16,5 +16,8 @@ export const TYPES = {
     DynamoDBClient: Symbol.for('DynamoDBClient'),
     VideoRepository: Symbol.for('VideoRepository'),
     StorageService: Symbol.for('StorageService'),
-    ChangeVideoStatusQueueService: Symbol.for('ChangeVideoStatusQueueService')
+    ChangeVideoStatusQueueService: Symbol.for('ChangeVideoStatusQueueService'),
+    IdentityService: Symbol.for('IdentityService'),
+    CognitoClient: Symbol.for('CognitoClient'),
+    UserController: Symbol.for('UserController')
 }

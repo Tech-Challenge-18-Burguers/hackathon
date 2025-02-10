@@ -1,5 +1,5 @@
 import Logger from "../../infra/logger/Logger";
-import Video, { VideoInput, VideoStatus } from "../entity/Video";
+import Video, { VideoInput, VideoOutput, VideoStatus } from "../entity/Video";
 import VideoRepository from "../repository/VideoRepository";
 import { randomUUID } from 'node:crypto'
 
@@ -9,9 +9,15 @@ export default class CreateVideoUseCase {
         private readonly repository: VideoRepository
     ) {}
 
-    async execute(input: VideoInput): Promise<Video> {
+    async execute(input: VideoInput): Promise<VideoOutput> {
         const video = { ...input, id: randomUUID(), status: VideoStatus.CREATED }
         this.logger.info(`Convert input to entity`, { input, video })
-        return this.repository.save(video)
+        const response = await this.repository.save(video)
+        return {
+            id: response.id,
+            name: response.name,
+            status: response.status,
+            description: response.description
+        }
     }
 }

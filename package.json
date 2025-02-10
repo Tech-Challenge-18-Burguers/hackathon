@@ -11,9 +11,16 @@
     "test:local:create": "npm run pretest:local && serverless invoke local -f create -p __payloads/.data/create.json",
     "test:local:update": "npm run pretest:local && serverless invoke local -f update -p __payloads/.data/update.json",
     "test:local:presignurl": "npm run pretest:local && serverless invoke local -f presignurl -p __payloads/.data/presignurl.json",
-    "deploy": "serverless deploy --verbose"
+    "test:local:list": "npm run pretest:local && serverless invoke local -f list -p __payloads/.data/presignurl.json",
+    "test:local:getById": "npm run pretest:local && serverless invoke local -f getById -p __payloads/.data/getById.json",
+    "test:local:user": "npm run pretest:local && serverless invoke local -f user -p __payloads/.data/user.json",
+    "test:local:authenticate": "npm run pretest:local && serverless invoke local -f authenticate -p __payloads/.data/user.json",
+    "deploy": "serverless deploy --verbose",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.4.0",
     "@types/archiver": "^6.0.3",
     "@types/aws-lambda": "^8.10.147",
     "@types/jest": "^29.5.14",
@@ -27,6 +34,7 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^2.13.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.734.0",
     "@aws-sdk/client-dynamodb": "^3.726.1",
     "@aws-sdk/client-s3": "^3.726.1",
     "@aws-sdk/client-sqs": "^3.726.1",
